@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Report</title>
+</head>
+<body>
+<h1> Comparison between <span th:text="${comparison.leftVersion()}"></span> and <span
+        th:text="${comparison.rightVersion()}"></span> of SpringBoot.</h1>
+</body>
+<table>
+    <thead>
+    <tr>
+        <th>Dependency</th>
+        <th><span th:text="${comparison.leftVersion()}"/> version</th>
+        <th><span th:text="${comparison.rightVersion()}"/> version</th>
+        <th>Diff</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+            th:each="dep, stat : ${comparison.dependencies()}">
+        <td><span th:text="${dep.dependency().groupId()}"/>: <span th:text="${dep.dependency().artifactId()}"/></td>
+        <td th:text="${dep.versions()[0]}"/>
+        <td th:text="${dep.versions()[1]}"/>
+        <td th:text="${dep.diff()}"/>
+    </tr>
+    </tbody>
+</table>
+</html>
