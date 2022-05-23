@@ -32,12 +32,11 @@ public class ComparatorService {
 
     public void compare(final Set<String> versions) {
         final var start = Instant.now();
-        final List<Dependencies> htmlWithVersions = Observable.fromIterable(versions)
+        final List<DependenciesPair> pairs = Observable.fromIterable(versions)
                 .flatMap(this.htmlWithVersionService::fetch)
                 .toList()
+                .map(this.dependenciesPairFactory::createAscPairs)
                 .blockingGet();
-        final List<DependenciesPair> pairs = this.dependenciesPairFactory.createAscPairs(htmlWithVersions);
-
         Observable.fromIterable(pairs)
                 .subscribeOn(Schedulers.computation())
                 .map(this.comparedDependenciesFactory::create)
