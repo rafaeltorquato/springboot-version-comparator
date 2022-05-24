@@ -19,6 +19,8 @@ public class CompareCommand implements Callable<Integer> {
 
     @CommandLine.Option(names = {"-v", "--versions"}, description = "SpringBoot versions. Ex: 2.4.3, 2.6.7, ...")
     private String versions;
+    @CommandLine.Option(names = {"-o", "--outputDir"}, description = "Output directory")
+    private String outputDir;
 
     @Override
     public Integer call() throws Exception {
@@ -27,7 +29,7 @@ public class CompareCommand implements Callable<Integer> {
                     new ExternalHtmlVersionService(),
                     new ComparedDependenciesFactory(),
                     new DependenciesPairFactory(),
-                    new HtmlReportWriter()
+                    new HtmlReportWriter(this.outputDir)
             );
             final Set<String> versionsSet = Stream.of(this.versions.split(","))
                     .map(String::trim)

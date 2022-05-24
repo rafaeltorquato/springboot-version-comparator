@@ -3,7 +3,6 @@ package com.torquato.springboot.vc.application;
 import com.torquato.springboot.vc.application.report.ReportWriter;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependencies;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
-import com.torquato.springboot.vc.domain.model.dependency.Dependencies;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPair;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPairFactory;
 import com.torquato.springboot.vc.domain.service.HtmlWithVersionService;
@@ -13,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -50,11 +46,8 @@ public class ComparatorService {
     private Observable<Void> toReport(final ComparedDependencies cpd) {
         Observable<Void> voidObservable = Observable.create(source -> {
             try {
-                final var fileName = "comp-" + cpd.leftVersion() + "-with-" + cpd.rightVersion() + "-";
-                final File tempFile = File.createTempFile(fileName, ".html");
-                this.reportWriter.write(cpd, new FileOutputStream(tempFile));
-                log.info("Report created at '{}'.", tempFile.getAbsolutePath());
-            } catch (IOException e) {
+                this.reportWriter.write(cpd);
+            } catch (Exception e) {
                 source.onError(e);
             }
             source.onComplete();
