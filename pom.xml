@@ -20,6 +20,7 @@
         <jsoup.version>1.14.3</jsoup.version>
         <thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
         <picocli.version>4.6.3</picocli.version>
+        <flying-saucer-pdf.version>9.1.22</flying-saucer-pdf.version>
     </properties>
 
     <dependencyManagement>
@@ -59,6 +60,11 @@
                 <artifactId>picocli</artifactId>
                 <version>${picocli.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>${flying-saucer-pdf.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -91,6 +97,10 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,7 +1,9 @@
 package com.torquato.springboot.vc.delivery.cli;
 
 import com.torquato.springboot.vc.application.ComparatorService;
+import com.torquato.springboot.vc.application.out.FileOutputWriter;
 import com.torquato.springboot.vc.application.report.HtmlReportWriter;
+import com.torquato.springboot.vc.application.report.PdfReportWriter;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPairFactory;
 import com.torquato.springboot.vc.infrastructure.ExternalHtmlVersionService;
@@ -29,7 +31,8 @@ public class CompareCommand implements Callable<Integer> {
                     new ExternalHtmlVersionService(),
                     new ComparedDependenciesFactory(),
                     new DependenciesPairFactory(),
-                    new HtmlReportWriter(this.outputDir)
+                    new PdfReportWriter(new HtmlReportWriter()),
+                    new FileOutputWriter(this.outputDir, "pdf")
             );
             final Set<String> versionsSet = Stream.of(this.versions.split(","))
                     .map(String::trim)

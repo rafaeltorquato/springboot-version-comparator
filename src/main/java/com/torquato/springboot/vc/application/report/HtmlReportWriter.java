@@ -9,8 +9,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.AbstractConfigurableTemplateResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -24,27 +22,17 @@ public class HtmlReportWriter implements ReportWriter {
         templateResolver.setTemplateMode("HTML");
     }
 
-    private final String outputDirectory;
-
     @Override
     @SneakyThrows
-    public void write(final ComparedDependencies cpd) {
-        //TODO separate template process from file writing
-
-        TemplateEngine templateEngine = new TemplateEngine();
+    public InMemoryReport write(final ComparedDependencies cpd) {
+        log.info("Computing html report {}-with-{}...", cpd.leftVersion(), cpd.rightVersion());
+        final TemplateEngine templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(templateResolver);
-        Context context = new Context();
+        final Context context = new Context();
         context.setVariable("comparison", cpd);
-        String html = templateEngine.process("/reports/report.html", context);
-        
-        new File(this.outputDirectory).mkdirs();
-        final var fileName = "/comp-" + cpd.leftVersion() + "-with-" + cpd.rightVersion() + ".html";
-        final File file = new File(this.outputDirectory + fileName);
-        FileOutputStream outputStream = new FileOutputStream(file);
-        outputStream.write(html.getBytes(StandardCharsets.UTF_8));
-        outputStream.close();
-        log.info("Report created at '{}'.", file.getAbsolutePath());
-
+        final String html = templateEngine.process("/reports/report.html", context);
+        log.info("Computing html report {}-with-{} DONE.", cpd.leftVersion(), cpd.rightVersion());
+        return new InMemoryReport(html.getBytes(StandardCharsets.UTF_8), cpd);
     }
 
 }
