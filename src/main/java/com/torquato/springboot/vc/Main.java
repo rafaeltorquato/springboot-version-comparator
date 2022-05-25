@@ -5,7 +5,6 @@ import picocli.CommandLine;
 
 public class Main {
 
-    //TODO create cli flow
     public static void main(final String[] args) {
         int exitCode = new CommandLine(new CompareCommand()).execute(args);
         System.exit(exitCode);

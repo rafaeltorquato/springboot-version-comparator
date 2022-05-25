@@ -19,10 +19,11 @@ import java.util.stream.Stream;
 @CommandLine.Command(name = "compare", description = "Compare two or more SpringBoot versions.")
 public class CompareCommand implements Callable<Integer> {
 
-    @CommandLine.Option(names = {"-v", "--versions"}, description = "SpringBoot versions. Ex: 2.4.3, 2.6.7, ...")
+    @CommandLine.Option(names = {"-v", "--versions"}, description = "SpringBoot versions. Ex: 2.4.3,2.6.7,...")
     private String versions;
     @CommandLine.Option(names = {"-o", "--outputDir"}, description = "Output directory")
     private String outputDir;
+    //TODO enhance cli flow
 
     @Override
     public Integer call() throws Exception {
