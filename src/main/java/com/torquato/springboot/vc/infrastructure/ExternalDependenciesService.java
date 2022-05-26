@@ -3,7 +3,6 @@ package com.torquato.springboot.vc.infrastructure;
 import com.torquato.springboot.vc.domain.model.dependency.Dependencies;
 import com.torquato.springboot.vc.domain.model.dependency.Dependency;
 import com.torquato.springboot.vc.domain.model.dependency.VersionedDependency;
-import com.torquato.springboot.vc.domain.model.html.HtmlOfVersion;
 import com.torquato.springboot.vc.domain.service.DependenciesService;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -73,5 +72,7 @@ public class ExternalDependenciesService implements DependenciesService {
         final var dependency = new Dependency(groupId, artifactId);
         return new VersionedDependency(dependency, artifactVersion);
     }
+
+    private record HtmlOfVersion(String version, String html) {}
 
 }
