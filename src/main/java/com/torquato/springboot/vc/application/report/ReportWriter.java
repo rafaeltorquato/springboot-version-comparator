@@ -6,4 +6,13 @@ public interface ReportWriter {
 
     InMemoryReport write(final ComparedDependencies comparedDependencies);
 
+    static ReportWriter create(String format) {
+        if ("pdf".equalsIgnoreCase(format.trim())) {
+            return new PdfReportWriter(new HtmlReportWriter());
+        } else if ("html".equalsIgnoreCase(format.trim())) {
+            return new HtmlReportWriter();
+        }
+        throw new IllegalArgumentException("Unknown format " + format);
+    }
+
 }

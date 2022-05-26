@@ -4,7 +4,7 @@ import com.torquato.springboot.vc.domain.model.dependency.Dependencies;
 import com.torquato.springboot.vc.domain.model.dependency.Dependency;
 import com.torquato.springboot.vc.domain.model.dependency.VersionedDependency;
 import com.torquato.springboot.vc.domain.model.html.HtmlOfVersion;
-import com.torquato.springboot.vc.domain.service.HtmlWithVersionService;
+import com.torquato.springboot.vc.domain.service.DependenciesService;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.SneakyThrows;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class ExternalHtmlVersionService implements HtmlWithVersionService {
+public class ExternalDependenciesService implements DependenciesService {
 
     private static final String VERSION_TEMPLATE_URL = "https://docs.spring.io/spring-boot/docs/%s/reference/" +
             "html/dependency-versions.html";

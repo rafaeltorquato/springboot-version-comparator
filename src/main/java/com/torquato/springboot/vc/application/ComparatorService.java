@@ -7,7 +7,7 @@ import com.torquato.springboot.vc.domain.model.dependency.ComparedDependencies;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPair;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPairFactory;
-import com.torquato.springboot.vc.domain.service.HtmlWithVersionService;
+import com.torquato.springboot.vc.domain.service.DependenciesService;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ComparatorService {
 
-    private final HtmlWithVersionService htmlWithVersionService;
+    private final DependenciesService dependenciesService;
     private final ComparedDependenciesFactory comparedDependenciesFactory;
     private final DependenciesPairFactory dependenciesPairFactory;
     private final ReportWriter reportWriter;
@@ -31,7 +31,7 @@ public class ComparatorService {
     public void compare(final Set<String> versions) {
         final var start = Instant.now();
         final List<DependenciesPair> pairs = Observable.fromIterable(versions)
-                .flatMap(this.htmlWithVersionService::fetch)
+                .flatMap(this.dependenciesService::fetch)
                 .toList()
                 .map(this.dependenciesPairFactory::createAscPairs)
                 .blockingGet();
