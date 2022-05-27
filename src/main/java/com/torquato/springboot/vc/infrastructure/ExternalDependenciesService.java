@@ -51,7 +51,7 @@ public class ExternalDependenciesService implements DependenciesService {
                 .doOnNext((v) -> log.info("Mapping dependencies of version {} COMPLETED!", v.version()));
     }
 
-    private List<VersionedDependency> deserialize(VersionAndHtml vah) {
+    private List<VersionedDependency> deserialize(final VersionAndHtml vah) {
         final Document document = Jsoup.parse(vah.html());
         final Element body = document.body();
         final Elements tbody = body.getElementsByTag("tbody");
@@ -65,7 +65,7 @@ public class ExternalDependenciesService implements DependenciesService {
                 .collect(Collectors.toList());
     }
 
-    private VersionedDependency getVersionedDependency(Element tr) {
+    private VersionedDependency getVersionedDependency(final Element tr) {
         final var codes = tr.getElementsByTag("code");
         final String groupId = codes.get(0).html().trim();
         final String artifactId = codes.get(1).html().trim();

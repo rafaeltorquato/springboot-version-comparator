@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class ComparedDependenciesFactory {
 
-    public ComparedDependencies create(DependenciesPair pair) {
+    public ComparedDependencies create(final DependenciesPair pair) {
         log.info("Comparing {} with {}...", pair.left().version(), pair.right().version());
         final Set<Dependency> allDependencies = Stream.of(pair.left(), pair.right())
                 .map(Dependencies::dependencies)
@@ -60,15 +60,15 @@ public class ComparedDependenciesFactory {
         final String[] leftNumbers = leftVersion.split("\\.");
         final String[] rightNumbers = rightVersion.split("\\.");
         try {
-            int majorDiff = Integer.parseInt(rightNumbers[0]) - Integer.parseInt(leftNumbers[0]);
+            final int majorDiff = Integer.parseInt(rightNumbers[0]) - Integer.parseInt(leftNumbers[0]);
             if (majorDiff > 0) {
                 return "major +" + majorDiff;
             }
-            int minorDiff = Integer.parseInt(rightNumbers[1]) - Integer.parseInt(leftNumbers[1]);
+            final int minorDiff = Integer.parseInt(rightNumbers[1]) - Integer.parseInt(leftNumbers[1]);
             if (minorDiff > 0) {
                 return "minor +" + minorDiff;
             }
-            int pathDiff = Integer.parseInt(rightNumbers[2]) - Integer.parseInt(leftNumbers[2]);
+            final int pathDiff = Integer.parseInt(rightNumbers[2]) - Integer.parseInt(leftNumbers[2]);
             if (pathDiff > 0) {
                 return "patch +" + pathDiff;
             }

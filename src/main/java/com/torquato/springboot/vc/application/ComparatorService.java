@@ -54,13 +54,13 @@ public class ComparatorService {
         return this.dependenciesPairFactory.createAscPairs(dependencies);
     }
 
-    private Observable<ComparedDependencies> compare(DependenciesPair pair) {
+    private Observable<ComparedDependencies> compare(final DependenciesPair pair) {
         return Observable.just(pair)
                 .subscribeOn(Schedulers.computation())
                 .map(this.comparedDependenciesFactory::create);
     }
 
-    private Observable<InMemoryReport> makeReport(ComparedDependencies dependencies) {
+    private Observable<InMemoryReport> makeReport(final ComparedDependencies dependencies) {
         return Observable.just(dependencies)
                 .subscribeOn(Schedulers.computation())
                 .map(this.reportWriter::write);
