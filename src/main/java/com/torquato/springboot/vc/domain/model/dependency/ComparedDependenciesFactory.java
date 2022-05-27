@@ -60,17 +60,21 @@ public class ComparedDependenciesFactory {
         final String[] leftNumbers = leftVersion.split("\\.");
         final String[] rightNumbers = rightVersion.split("\\.");
         try {
-            int numberDiff = Math.abs(Integer.parseInt(rightNumbers[0]) - Integer.parseInt(leftNumbers[0]));
-            if (numberDiff > 0) {
-                return "major +" + numberDiff;
+            int majorDiff = Integer.parseInt(rightNumbers[0]) - Integer.parseInt(leftNumbers[0]);
+            if (majorDiff > 0) {
+                return "major +" + majorDiff;
             }
-            numberDiff = Math.abs(Integer.parseInt(rightNumbers[1]) - Integer.parseInt(leftNumbers[1]));
-            if (numberDiff > 0) {
-                return "minor +" + numberDiff;
+            int minorDiff = Integer.parseInt(rightNumbers[1]) - Integer.parseInt(leftNumbers[1]);
+            if (minorDiff > 0) {
+                return "minor +" + minorDiff;
             }
-            numberDiff = Math.abs(Integer.parseInt(rightNumbers[2]) - Integer.parseInt(leftNumbers[2]));
-            if (numberDiff > 0) {
-                return "patch +" + numberDiff;
+            int pathDiff = Integer.parseInt(rightNumbers[2]) - Integer.parseInt(leftNumbers[2]);
+            if (pathDiff > 0) {
+                return "patch +" + pathDiff;
+            }
+
+            if(majorDiff < 0 || minorDiff < 0 || pathDiff < 0) {
+                return "downgraded";
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
         }
