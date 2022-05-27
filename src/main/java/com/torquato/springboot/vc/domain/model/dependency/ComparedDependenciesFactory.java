@@ -1,5 +1,7 @@
 package com.torquato.springboot.vc.domain.model.dependency;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -9,9 +11,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class ComparedDependenciesFactory {
 
     public ComparedDependencies create(DependenciesPair pair) {
+        log.info("Comparing {} with {}...", pair.left().version(), pair.right().version());
         final Set<Dependency> allDependencies = Stream.of(pair.left(), pair.right())
                 .map(Dependencies::dependencies)
                 .flatMap(Collection::stream)
@@ -45,6 +49,7 @@ public class ComparedDependenciesFactory {
                 })
                 .sorted(dependencyComparator)
                 .collect(Collectors.toList());
+        log.info("Comparing {} with {} DONE.", pair.left().version(), pair.right().version());
         return new ComparedDependencies(pair.left().version(), pair.right().version(), dependencies);
     }
 

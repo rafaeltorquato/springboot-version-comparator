@@ -26,13 +26,14 @@ public class ExternalDependenciesService implements DependenciesService {
             "html/dependency-versions.html";
 
     @Override
-    public Observable<Dependencies> fetch(final String version) {
+    public Dependencies fetch(final String version) {
         return Observable.just(version)
                 .subscribeOn(Schedulers.io())
                 .doOnNext(v -> log.info("Fetching dependencies of Spring Boot version {}...", v))
                 .map(v -> new HtmlOfVersion(v, doRequest(v)))
                 .doOnNext(v -> log.info("Fetched dependencies of Spring Boot version {}.", v.version()))
-                .flatMap(this::toDependencies);
+                .flatMap(this::toDependencies)
+                .blockingFirst();
     }
 
     @SneakyThrows
@@ -44,9 +45,9 @@ public class ExternalDependenciesService implements DependenciesService {
     private Observable<Dependencies> toDependencies(final HtmlOfVersion htmlOfVersion) {
         return Observable.just(htmlOfVersion)
                 .observeOn(Schedulers.computation())
-                .doOnNext((v) -> log.info("Mapping dependencies..."))
+                .doOnNext((v) -> log.info("Mapping dependencies of version {}...", htmlOfVersion.version))
                 .map(hwv -> new Dependencies(hwv.version(), getDependencies(hwv)))
-                .doOnNext((v) -> log.info("Mapping dependencies COMPLETED!"));
+                .doOnNext((v) -> log.info("Mapping dependencies of version {} COMPLETED!", htmlOfVersion.version));
     }
 
     private List<VersionedDependency> getDependencies(HtmlOfVersion hwv) {
@@ -54,7 +55,7 @@ public class ExternalDependenciesService implements DependenciesService {
         final Element body = document.body();
         final Elements tbody = body.getElementsByTag("tbody");
         final Optional<Element> firstTbody = Optional.ofNullable(tbody.first());
-        if(firstTbody.isEmpty()) return Collections.emptyList();
+        if (firstTbody.isEmpty()) return Collections.emptyList();
 
         final Elements trs = firstTbody.get().getElementsByTag("tr");
         return trs
