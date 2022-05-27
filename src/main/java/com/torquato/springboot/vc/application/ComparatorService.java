@@ -3,6 +3,7 @@ package com.torquato.springboot.vc.application;
 import com.torquato.springboot.vc.application.out.OutputWriter;
 import com.torquato.springboot.vc.application.report.InMemoryReport;
 import com.torquato.springboot.vc.application.report.ReportWriter;
+import com.torquato.springboot.vc.domain.model.dependency.ComparedDependencies;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
 import com.torquato.springboot.vc.domain.model.dependency.Dependencies;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPair;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -33,9 +35,9 @@ public class ComparatorService {
         Observable.fromIterable(versions)
                 .flatMap(this::fetchVersion)
                 .toList()
-                .map(this.dependenciesPairFactory::createAscPairs)
-                .flattenAsObservable(dp -> dp)
-                .flatMap(this::compareAndWriteReport)
+                .flattenAsObservable(this::createDependenciesPairs)
+                .flatMap(this::compare)
+                .flatMap(this::makeReport)
                 .flatMap(this::writeOnOutput)
                 .blockingSubscribe();
 
@@ -48,10 +50,19 @@ public class ComparatorService {
                 .map(this.dependenciesService::fetch);
     }
 
-    private Observable<InMemoryReport> compareAndWriteReport(DependenciesPair dependenciesPair) {
-        return Observable.just(dependenciesPair)
+    private List<DependenciesPair> createDependenciesPairs(final List<Dependencies> dependencies) {
+        return this.dependenciesPairFactory.createAscPairs(dependencies);
+    }
+
+    private Observable<ComparedDependencies> compare(DependenciesPair pair) {
+        return Observable.just(pair)
                 .subscribeOn(Schedulers.computation())
-                .map(this.comparedDependenciesFactory::create)
+                .map(this.comparedDependenciesFactory::create);
+    }
+
+    private Observable<InMemoryReport> makeReport(ComparedDependencies dependencies) {
+        return Observable.just(dependencies)
+                .subscribeOn(Schedulers.computation())
                 .map(this.reportWriter::write);
     }
 

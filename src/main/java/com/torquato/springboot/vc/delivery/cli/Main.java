@@ -1,6 +1,5 @@
-package com.torquato.springboot.vc;
+package com.torquato.springboot.vc.delivery.cli;
 
-import com.torquato.springboot.vc.delivery.cli.CompareCommand;
 import picocli.CommandLine;
 
 public class Main {

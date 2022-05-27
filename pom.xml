@@ -118,7 +118,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.torquato.springboot.vc.Main</mainClass>
+                            <mainClass>com.torquato.springboot.vc.delivery.cli.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -9,7 +9,6 @@ import com.torquato.springboot.vc.infrastructure.ExternalDependenciesService;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -19,13 +18,24 @@ import java.util.stream.Stream;
 @CommandLine.Command(name = "compare", description = "Compare two or more SpringBoot versions.")
 public class CompareCommand implements Callable<Integer> {
 
-    @CommandLine.Option(names = {"-v", "--versions"}, description = "SpringBoot versions. Ex: 2.4.3,2.6.7,...")
+    @CommandLine.Option(
+            required = true,
+            names = {"-v", "--versions"},
+            description = "Mandatory SpringBoot versions. Ex: 2.4.3,2.6.7,...")
     private String versions;
-    @CommandLine.Option(names = {"-o", "--outputDir"}, description = "Output directory")
+    @CommandLine.Option(
+            required = true,
+            names = {"-o", "--outputDir"},
+            description = "Mandatory output directory.")
     private String outputDir;
 
-    @CommandLine.Option(names = {"-f", "--format"}, description = "Output format. Available: html | pdf")
+    @CommandLine.Option(
+            names = {"-f", "--format"},
+            description = "Output format. Available: html | pdf. Default: html.",
+            defaultValue = "html")
     private String format;
+
+    //TODO v1.1.0 - Add filter on groupId,artifactId and diff
 
     @Override
     public Integer call() throws Exception {
@@ -40,13 +50,12 @@ public class CompareCommand implements Callable<Integer> {
     }
 
     private void execute() {
-        final String normalizedFormat = Optional.ofNullable(this.format).orElse("html");
         final ComparatorService comparatorService = new ComparatorService(
                 new ExternalDependenciesService(),
                 new ComparedDependenciesFactory(),
                 new DependenciesPairFactory(),
-                ReportWriter.create(normalizedFormat),
-                new FileOutputWriter(this.outputDir, normalizedFormat)
+                ReportWriter.create(this.format),
+                new FileOutputWriter(this.outputDir, this.format)
         );
         final Set<String> versionsSet = Stream.of(this.versions.split(","))
                 .map(String::trim)

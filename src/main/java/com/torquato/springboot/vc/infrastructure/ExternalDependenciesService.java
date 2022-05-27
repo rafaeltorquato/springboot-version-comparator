@@ -29,29 +29,30 @@ public class ExternalDependenciesService implements DependenciesService {
     public Dependencies fetch(final String version) {
         return Observable.just(version)
                 .subscribeOn(Schedulers.io())
-                .doOnNext(v -> log.info("Fetching dependencies of Spring Boot version {}...", v))
-                .map(v -> new HtmlOfVersion(v, doRequest(v)))
-                .doOnNext(v -> log.info("Fetched dependencies of Spring Boot version {}.", v.version()))
+                .doOnNext(ignored -> log.info("Fetching dependencies of Spring Boot version {}...", version))
+                .map(this::doRequest)
+                .map(html -> new VersionAndHtml(version, html))
+                .doOnNext(ignored -> log.info("Fetched dependencies of Spring Boot version {}.", version))
                 .flatMap(this::toDependencies)
                 .blockingFirst();
     }
 
     @SneakyThrows
-    private static String doRequest(final String version) {
+    private String doRequest(final String version) {
         final Connection connect = Jsoup.connect(String.format(VERSION_TEMPLATE_URL, version));
         return connect.execute().body();
     }
 
-    private Observable<Dependencies> toDependencies(final HtmlOfVersion htmlOfVersion) {
-        return Observable.just(htmlOfVersion)
+    private Observable<Dependencies> toDependencies(final VersionAndHtml vah) {
+        return Observable.just(vah)
                 .observeOn(Schedulers.computation())
-                .doOnNext((v) -> log.info("Mapping dependencies of version {}...", htmlOfVersion.version))
-                .map(hwv -> new Dependencies(hwv.version(), getDependencies(hwv)))
-                .doOnNext((v) -> log.info("Mapping dependencies of version {} COMPLETED!", htmlOfVersion.version));
+                .doOnNext((v) -> log.info("Mapping dependencies of version {}...", v.version))
+                .map(v -> new Dependencies(v.version(), deserialize(v)))
+                .doOnNext((v) -> log.info("Mapping dependencies of version {} COMPLETED!", v.version()));
     }
 
-    private List<VersionedDependency> getDependencies(HtmlOfVersion hwv) {
-        final Document document = Jsoup.parse(hwv.html());
+    private List<VersionedDependency> deserialize(VersionAndHtml vah) {
+        final Document document = Jsoup.parse(vah.html());
         final Element body = document.body();
         final Elements tbody = body.getElementsByTag("tbody");
         final Optional<Element> firstTbody = Optional.ofNullable(tbody.first());
@@ -74,6 +75,6 @@ public class ExternalDependenciesService implements DependenciesService {
         return new VersionedDependency(dependency, artifactVersion);
     }
 
-    private record HtmlOfVersion(String version, String html) {}
+    private record VersionAndHtml(String version, String html) {}
 
 }
