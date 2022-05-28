@@ -42,6 +42,8 @@ public class Filters {
     public static Predicate<ComparedDependency> comparedDependency(final String diff,
                                                                    final String groupId,
                                                                    final String artifactId) {
+        if (diff.isBlank() && groupId.isBlank() && artifactId.isBlank()) return ALL;
+
         final Predicate<ComparedDependency> diffFilter = comparedDependencyDiff(diff);
         final Predicate<ComparedDependency> groupIdFilter = comparedDependencyGroupId(groupId);
         final Predicate<ComparedDependency> artifactIdFilter = comparedDependencyArtifactId(artifactId);
@@ -59,10 +61,7 @@ public class Filters {
 
     private static Predicate<ComparedDependency> createFilters(final String value,
                                                                final Function<String, Predicate<ComparedDependency>> filter) {
-        final String[] split = value.split(",");
-        if (split.length == 0) return Filters.ALL;
-
-        return Stream.of(split)
+        return Stream.of(value.split(","))
                 .map(String::trim)
                 .filter(Predicate.not(String::isBlank))
                 .map(filter)
