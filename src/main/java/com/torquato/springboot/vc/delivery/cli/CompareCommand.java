@@ -1,6 +1,7 @@
 package com.torquato.springboot.vc.delivery.cli;
 
 import com.torquato.springboot.vc.application.ComparatorService;
+import com.torquato.springboot.vc.application.filter.Filters;
 import com.torquato.springboot.vc.application.out.FileOutputWriter;
 import com.torquato.springboot.vc.application.report.ReportWriter;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
@@ -35,7 +36,26 @@ public class CompareCommand implements Callable<Integer> {
             defaultValue = "html")
     private String format;
 
-    //TODO v1.1.0 - Add filter on groupId,artifactId and diff
+    @CommandLine.Option(
+            names = {"-df", "--diffFilter"},
+            description = "Filter dependencies by diff. Works like contains. " +
+                    "Available: added | removed | major | minor | patch | downgraded. Ex: added,major,removed,etc...",
+            defaultValue = "")
+    private String diffFilter;
+
+    @CommandLine.Option(
+            names = {"-gf", "--groupIdFilter"},
+            description = "Filter compared dependencies by groupId. Works like contains. " +
+                    "Ex: org.mockito,org.flywaydb,etc...",
+            defaultValue = "")
+    private String groupIdFilter;
+
+    @CommandLine.Option(
+            names = {"-af", "--artifactIdFilter"},
+            description = "Filter dependencies by artifactId. Works like contains. " +
+                    "Ex: kafka-shell,httpclient5,etc...",
+            defaultValue = "")
+    private String artifactIdFilter;
 
     @Override
     public Integer call() throws Exception {
@@ -55,7 +75,8 @@ public class CompareCommand implements Callable<Integer> {
                 new ComparedDependenciesFactory(),
                 new DependenciesPairFactory(),
                 ReportWriter.create(this.format),
-                new FileOutputWriter(this.outputDir, this.format)
+                new FileOutputWriter(this.outputDir, this.format),
+                Filters.comparedDependency(this.diffFilter, this.groupIdFilter, this.artifactIdFilter)
         );
         final Set<String> versionsSet = Stream.of(this.versions.split(","))
                 .map(String::trim)
