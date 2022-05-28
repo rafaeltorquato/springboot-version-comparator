@@ -31,7 +31,7 @@ public class ComparatorService {
     private final DependenciesPairFactory dependenciesPairFactory;
     private final ReportWriter reportWriter;
     private final OutputWriter outputWriter;
-    private final Predicate<ComparedDependency> comparedDependencyFilter;
+    private final Predicate<ComparedDependency> dependencyFilter;
 
     public void compare(final Set<String> versions) {
         final var start = Instant.now();
@@ -52,7 +52,7 @@ public class ComparatorService {
     private ComparedDependencies applyFilters(final ComparedDependencies comparedDependencies) {
         final List<ComparedDependency> filteredDependencies = comparedDependencies.dependencies()
                 .stream()
-                .filter(this.comparedDependencyFilter)
+                .filter(this.dependencyFilter)
                 .collect(Collectors.toList());
         return new ComparedDependencies(
                 comparedDependencies.leftVersion(),
