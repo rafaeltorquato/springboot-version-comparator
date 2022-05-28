@@ -1,0 +1,53 @@
+[
+  {
+    "name": "com.torquato.springboot.vc.domain.model.dependency.ComparedDependencies",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.torquato.springboot.vc.domain.model.dependency.ComparedDependency",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.torquato.springboot.vc.domain.model.dependency.Dependency",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.commons.logging.impl.LogFactoryImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.openhtmltopdf.pdfboxout.PdfBoxRenderer",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "queryAllPublicConstructors": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.openhtmltopdf.outputdevice.helper.BaseDocument",
+          "com.openhtmltopdf.outputdevice.helper.UnicodeImplementation",
+          "com.openhtmltopdf.outputdevice.helper.PageDimensions",
+          "com.openhtmltopdf.pdfboxout.PdfRendererBuilderState",
+          "java.io.Closeable"
+        ]
+      }
+    ]
+  }
+]

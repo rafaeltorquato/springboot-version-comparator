@@ -8,12 +8,17 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +44,19 @@ public class ExternalDependenciesService implements DependenciesService {
 
     @SneakyThrows
     private String doRequest(final String version) {
-        final Connection connect = Jsoup.connect(String.format(VERSION_TEMPLATE_URL, version));
-        return connect.execute().body();
+        final URL url = new URL(String.format(VERSION_TEMPLATE_URL, version));
+
+        final HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        int responseCode = con.getResponseCode();
+        if (responseCode != 200) throw new RuntimeException("Error");
+
+        try (final InputStream in = con.getInputStream()) {
+            return new BufferedReader(
+                    new InputStreamReader(in, StandardCharsets.UTF_8))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+        }
     }
 
     private Observable<Dependencies> toDependencies(final VersionAndHtml vah) {

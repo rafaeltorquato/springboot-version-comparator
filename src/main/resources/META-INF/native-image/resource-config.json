@@ -1,0 +1,11 @@
+{
+  "resources": {
+    "includes": [
+      {"pattern": ".*\\.html$"},
+      {"pattern": ".*\\.afm$"},
+      {"pattern": ".*\\.dtd$"},
+      {"pattern": ".*\\.txt$"},
+      {"pattern": ".*xhtmlrenderer\\.conf$"}
+    ]
+  }
+}
