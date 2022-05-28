@@ -42,6 +42,7 @@ public class Filters {
     public static Predicate<ComparedDependency> comparedDependency(final String diff,
                                                                    final String groupId,
                                                                    final String artifactId) {
+        //TODO Improve it
         if (diff.isBlank() && groupId.isBlank() && artifactId.isBlank()) return ALL;
 
         final Predicate<ComparedDependency> diffFilter = comparedDependencyDiff(diff);
