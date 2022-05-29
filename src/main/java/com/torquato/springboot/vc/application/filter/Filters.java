@@ -42,26 +42,21 @@ public class Filters {
     public static Predicate<ComparedDependency> comparedDependency(final String diff,
                                                                    final String groupId,
                                                                    final String artifactId) {
-        //TODO Improve it
-        if (diff.isBlank() && groupId.isBlank() && artifactId.isBlank()) return ALL;
 
         final Predicate<ComparedDependency> diffFilter = comparedDependencyDiff(diff);
         final Predicate<ComparedDependency> groupIdFilter = comparedDependencyGroupId(groupId);
         final Predicate<ComparedDependency> artifactIdFilter = comparedDependencyArtifactId(artifactId);
-        if (!diff.isBlank() && !groupId.isBlank() && !artifactId.isBlank()) {
-            return diffFilter.and(groupIdFilter).and(artifactIdFilter);
-        } else if (!diff.isBlank() && !groupId.isBlank()) {
-            return diffFilter.and(groupIdFilter).or(artifactIdFilter);
-        } else if (!diff.isBlank() && !artifactId.isBlank()) {
-            return diffFilter.and(artifactIdFilter).or(groupIdFilter);
-        } else if (!artifactId.isBlank() && !groupId.isBlank()) {
-            return artifactIdFilter.and(groupIdFilter).or(diffFilter);
-        }
-        return diffFilter.or(groupIdFilter).or(artifactIdFilter);
+
+        Predicate<ComparedDependency> filter = ALL;
+        filter = diff.isBlank() ? filter.or(diffFilter) : filter.and(diffFilter);
+        filter = groupId.isBlank() ? filter.or(groupIdFilter) : filter.and(groupIdFilter);
+        filter = artifactId.isBlank() ? filter.or(artifactIdFilter) : filter.and(artifactIdFilter);
+
+        return filter;
     }
 
-    private static Predicate<ComparedDependency> createFilters(final String value,
-                                                               final Function<String, Predicate<ComparedDependency>> filter) {
+    private static Predicate<ComparedDependency> createFilters(String value,
+                                                               Function<String, Predicate<ComparedDependency>> filter) {
         return Stream.of(value.split(","))
                 .map(String::trim)
                 .filter(Predicate.not(String::isBlank))
