@@ -10,6 +10,7 @@ import com.torquato.springboot.vc.infrastructure.ExternalDependenciesService;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class CompareCommand implements Callable<Integer> {
 
     @CommandLine.Option(
             names = {"-od", "--outputDir"},
-            description = "Output directory, mandatory if output is file. ")
+            description = "Output directory, mandatory if output is file, ignored if output is console. ")
     private String outputDir;
 
     @CommandLine.Option(
@@ -45,22 +46,22 @@ public class CompareCommand implements Callable<Integer> {
             names = {"-df", "--diffFilter"},
             description = "Filter dependencies by diff. Works like contains. " +
                     "Available: added | removed | major | minor | patch | downgraded. Ex: added,major,removed,etc...",
-            defaultValue = "")
-    private String diffFilter;
+            split = ",")
+    private Set<String> diffFilter = Collections.emptySet();
 
     @CommandLine.Option(
             names = {"-gf", "--groupIdFilter"},
             description = "Filter compared dependencies by groupId. Works like contains. " +
                     "Ex: org.mockito,org.flywaydb,etc...",
-            defaultValue = "")
-    private String groupIdFilter;
+            split = ",")
+    private Set<String> groupIdFilter = Collections.emptySet();
 
     @CommandLine.Option(
             names = {"-af", "--artifactIdFilter"},
             description = "Filter dependencies by artifactId. Works like contains. " +
                     "Ex: kafka-shell,httpclient5,etc...",
-            defaultValue = "")
-    private String artifactIdFilter;
+            split = ",")
+    private Set<String> artifactIdFilter = Collections.emptySet();
 
     @Override
     public Integer call() throws Exception {

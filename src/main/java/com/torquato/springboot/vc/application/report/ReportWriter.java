@@ -7,14 +7,12 @@ public interface ReportWriter {
     InMemoryReport write(final ComparedDependencies comparedDependencies);
 
     static ReportWriter create(final String format) {
-        if ("pdf".equalsIgnoreCase(format.trim())) {
-            return new PdfReportWriter(new HtmlReportWriter());
-        } else if ("html".equalsIgnoreCase(format.trim())) {
-            return new HtmlReportWriter();
-        } else if ("txt".equals(format.trim())) {
-            return new TxtReportWriter();
-        }
-        throw new IllegalArgumentException("Unknown format " + format);
+        return switch (format) {
+            case "pdf" -> new PdfReportWriter(new HtmlReportWriter());
+            case "html" -> new HtmlReportWriter();
+            case "txt" -> new TxtReportWriter();
+            default -> throw new IllegalArgumentException("Unknown format " + format);
+        };
     }
 
 }

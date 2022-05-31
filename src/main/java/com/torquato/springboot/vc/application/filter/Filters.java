@@ -4,9 +4,9 @@ import com.torquato.springboot.vc.domain.model.dependency.ComparedDependency;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Filters {
@@ -27,37 +27,38 @@ public class Filters {
         return cd -> cd.dependency().groupId().contains(value);
     }
 
-    public static Predicate<ComparedDependency> comparedDependencyDiff(final String value) {
+    public static Predicate<ComparedDependency> comparedDependencyDiff(final Set<String> value) {
         return createFilters(value, Filters::diff);
     }
 
-    public static Predicate<ComparedDependency> comparedDependencyArtifactId(final String value) {
-        return createFilters(value, Filters::artifactId);
+    public static Predicate<ComparedDependency> comparedDependencyArtifactId(final Set<String> values) {
+        return createFilters(values, Filters::artifactId);
     }
 
-    public static Predicate<ComparedDependency> comparedDependencyGroupId(final String value) {
-        return createFilters(value, Filters::groupId);
+    public static Predicate<ComparedDependency> comparedDependencyGroupId(final Set<String> values) {
+        return createFilters(values, Filters::groupId);
     }
 
-    public static Predicate<ComparedDependency> comparedDependency(final String diff,
-                                                                   final String groupId,
-                                                                   final String artifactId) {
+    public static Predicate<ComparedDependency> comparedDependency(final Set<String> diffValues,
+                                                                   final Set<String> groupIdValues,
+                                                                   final Set<String> artifactIdValues) {
 
-        final Predicate<ComparedDependency> diffFilter = comparedDependencyDiff(diff);
-        final Predicate<ComparedDependency> groupIdFilter = comparedDependencyGroupId(groupId);
-        final Predicate<ComparedDependency> artifactIdFilter = comparedDependencyArtifactId(artifactId);
+        final Predicate<ComparedDependency> diffFilter = comparedDependencyDiff(diffValues);
+        final Predicate<ComparedDependency> groupIdFilter = comparedDependencyGroupId(groupIdValues);
+        final Predicate<ComparedDependency> artifactIdFilter = comparedDependencyArtifactId(artifactIdValues);
 
         Predicate<ComparedDependency> filter = ALL;
-        filter = diff.isBlank() ? filter.or(diffFilter) : filter.and(diffFilter);
-        filter = groupId.isBlank() ? filter.or(groupIdFilter) : filter.and(groupIdFilter);
-        filter = artifactId.isBlank() ? filter.or(artifactIdFilter) : filter.and(artifactIdFilter);
+        filter = diffValues.isEmpty() ? filter.or(diffFilter) : filter.and(diffFilter);
+        filter = groupIdValues.isEmpty() ? filter.or(groupIdFilter) : filter.and(groupIdFilter);
+        filter = artifactIdValues.isEmpty() ? filter.or(artifactIdFilter) : filter.and(artifactIdFilter);
 
         return filter;
     }
 
-    private static Predicate<ComparedDependency> createFilters(String value,
+    private static Predicate<ComparedDependency> createFilters(Set<String> values,
                                                                Function<String, Predicate<ComparedDependency>> filter) {
-        return Stream.of(value.split(","))
+        return values
+                .stream()
                 .map(String::trim)
                 .filter(Predicate.not(String::isBlank))
                 .map(filter)
