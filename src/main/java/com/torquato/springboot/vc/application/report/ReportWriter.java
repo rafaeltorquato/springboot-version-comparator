@@ -6,7 +6,7 @@ public interface ReportWriter {
 
     InMemoryReport write(final ComparedDependencies comparedDependencies);
 
-    static ReportWriter create(String format) {
+    static ReportWriter create(final String format) {
         if ("pdf".equalsIgnoreCase(format.trim())) {
             return new PdfReportWriter(new HtmlReportWriter());
         } else if ("html".equalsIgnoreCase(format.trim())) {

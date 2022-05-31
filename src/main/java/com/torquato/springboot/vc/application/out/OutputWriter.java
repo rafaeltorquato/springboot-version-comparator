@@ -13,7 +13,6 @@ public interface OutputWriter {
             return new FileOutputWriter(outputDir, format);
         }
         throw new IllegalArgumentException("Invalid output option " + output);
-
     }
 
 }

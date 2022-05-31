@@ -11,7 +11,7 @@ public class TxtReportWriter implements ReportWriter {
     @Override
     public InMemoryReport write(final ComparedDependencies comparedDependencies) {
         final StringBuilder output = new StringBuilder();
-        String template = "%1$-90s %2$-20s %3$-20s %4$-10s";
+        final String template = "%1$-90s %2$-20s %3$-20s %4$-10s";
         output.append(String.format("COMPARISON BETWEEN %s AND %s VERSIONS\n",
                 comparedDependencies.leftVersion(),
                 comparedDependencies.rightVersion()));
