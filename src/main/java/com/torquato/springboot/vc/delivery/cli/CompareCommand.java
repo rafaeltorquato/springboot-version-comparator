@@ -94,7 +94,7 @@ public class CompareCommand implements Callable<Integer> {
 
     private void validateParameters() {
         if ("console".equals(this.output.trim()) && Set.of("html", "pdf").contains(this.format.trim())) {
-            throw new IllegalArgumentException("Available only in file output.");
+            throw new IllegalArgumentException("Console output is available only to txt format.");
         }
     }
 
