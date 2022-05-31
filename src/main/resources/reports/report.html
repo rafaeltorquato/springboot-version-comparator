@@ -21,8 +21,8 @@
     <tr
             th:each="dep, stat : ${comparison.dependencies()}">
         <td><span th:text="${dep.dependency().groupId()}"/>: <span th:text="${dep.dependency().artifactId()}"/></td>
-        <td th:text="${dep.versions()[0]}"/>
-        <td th:text="${dep.versions()[1]}"/>
+        <td th:text="${dep.leftVersion()}"/>
+        <td th:text="${dep.rightVersion()}"/>
         <td th:text="${dep.diff()}"/>
     </tr>
     </tbody>

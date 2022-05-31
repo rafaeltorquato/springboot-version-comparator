@@ -43,7 +43,8 @@ public class ComparedDependenciesFactory {
                     final String diff = getDiff(leftVersion, rightVersion);
                     return new ComparedDependency(
                             dependency,
-                            List.of(leftVersion, rightVersion),
+                            leftVersion,
+                            rightVersion,
                             diff
                     );
                 })

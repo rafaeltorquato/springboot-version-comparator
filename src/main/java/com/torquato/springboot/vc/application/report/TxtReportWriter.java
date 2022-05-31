@@ -20,8 +20,8 @@ public class TxtReportWriter implements ReportWriter {
             final Dependency dependency = cd.dependency();
             output.append(String.format(template + "\n",
                     dependency.groupId() + ":" + dependency.artifactId(),
-                    cd.versions().get(0),
-                    cd.versions().get(1),
+                    cd.leftVersion(),
+                    cd.rightVersion(),
                     cd.diff()));
         }
         return new InMemoryReport(output.toString().getBytes(StandardCharsets.UTF_8), comparedDependencies);
