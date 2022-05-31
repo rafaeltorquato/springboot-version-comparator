@@ -2,7 +2,7 @@ package com.torquato.springboot.vc.delivery.cli;
 
 import com.torquato.springboot.vc.application.ComparatorService;
 import com.torquato.springboot.vc.application.filter.Filters;
-import com.torquato.springboot.vc.application.out.FileOutputWriter;
+import com.torquato.springboot.vc.application.out.OutputWriter;
 import com.torquato.springboot.vc.application.report.ReportWriter;
 import com.torquato.springboot.vc.domain.model.dependency.ComparedDependenciesFactory;
 import com.torquato.springboot.vc.domain.model.dependency.DependenciesPairFactory;
@@ -26,14 +26,19 @@ public class CompareCommand implements Callable<Integer> {
     private String versions;
     @CommandLine.Option(
             required = true,
-            names = {"-o", "--outputDir"},
-            description = "Mandatory output directory.")
+            names = {"-o", "--output"},
+            description = "Output file or console. ")
+    private String output;
+
+    @CommandLine.Option(
+            names = {"-od", "--outputDir"},
+            description = "Output directory, mandatory if output is file. ")
     private String outputDir;
 
     @CommandLine.Option(
             names = {"-f", "--format"},
-            description = "Output format. Available: html | pdf. Default: html.",
-            defaultValue = "html")
+            description = "Output format. html | pdf | txt. Default is txt, html and pdf available only on file output",
+            defaultValue = "txt")
     private String format;
 
     @CommandLine.Option(
@@ -70,12 +75,15 @@ public class CompareCommand implements Callable<Integer> {
     }
 
     private void execute() {
+        if ("console".equals(this.output.trim()) && Set.of("html", "pdf").contains(this.format.trim())) {
+            throw new IllegalArgumentException("Available only in file output.");
+        }
         final ComparatorService comparatorService = new ComparatorService(
                 new ExternalDependenciesService(),
                 new ComparedDependenciesFactory(),
                 new DependenciesPairFactory(),
                 ReportWriter.create(this.format),
-                new FileOutputWriter(this.outputDir, this.format),
+                OutputWriter.create(this.output, this.format, this.outputDir),
                 Filters.comparedDependency(this.diffFilter, this.groupIdFilter, this.artifactIdFilter)
         );
         final Set<String> versionsSet = Stream.of(this.versions.split(","))

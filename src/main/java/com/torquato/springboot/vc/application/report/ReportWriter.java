@@ -11,6 +11,8 @@ public interface ReportWriter {
             return new PdfReportWriter(new HtmlReportWriter());
         } else if ("html".equalsIgnoreCase(format.trim())) {
             return new HtmlReportWriter();
+        } else if ("txt".equals(format.trim())) {
+            return new TextReportWriter();
         }
         throw new IllegalArgumentException("Unknown format " + format);
     }

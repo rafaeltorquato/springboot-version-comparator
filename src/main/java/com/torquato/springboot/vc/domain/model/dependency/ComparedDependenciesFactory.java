@@ -73,7 +73,7 @@ public class ComparedDependenciesFactory {
                 return "patch +" + pathDiff;
             }
 
-            if(majorDiff < 0 || minorDiff < 0 || pathDiff < 0) {
+            if (majorDiff < 0 || minorDiff < 0 || pathDiff < 0) {
                 return "downgraded";
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
