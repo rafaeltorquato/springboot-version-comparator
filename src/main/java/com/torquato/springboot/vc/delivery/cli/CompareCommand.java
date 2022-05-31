@@ -75,9 +75,8 @@ public class CompareCommand implements Callable<Integer> {
     }
 
     private void execute() {
-        if ("console".equals(this.output.trim()) && Set.of("html", "pdf").contains(this.format.trim())) {
-            throw new IllegalArgumentException("Available only in file output.");
-        }
+        validateParameters();
+
         final ComparatorService comparatorService = new ComparatorService(
                 new ExternalDependenciesService(),
                 new ComparedDependenciesFactory(),
@@ -90,6 +89,12 @@ public class CompareCommand implements Callable<Integer> {
                 .map(String::trim)
                 .collect(Collectors.toSet());
         comparatorService.compare(versionsSet);
+    }
+
+    private void validateParameters() {
+        if ("console".equals(this.output.trim()) && Set.of("html", "pdf").contains(this.format.trim())) {
+            throw new IllegalArgumentException("Available only in file output.");
+        }
     }
 
 }

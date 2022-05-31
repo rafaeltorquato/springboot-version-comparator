@@ -12,7 +12,7 @@ public interface ReportWriter {
         } else if ("html".equalsIgnoreCase(format.trim())) {
             return new HtmlReportWriter();
         } else if ("txt".equals(format.trim())) {
-            return new TextReportWriter();
+            return new TxtReportWriter();
         }
         throw new IllegalArgumentException("Unknown format " + format);
     }
