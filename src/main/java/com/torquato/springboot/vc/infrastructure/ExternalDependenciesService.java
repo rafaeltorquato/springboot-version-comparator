@@ -14,7 +14,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,11 +54,10 @@ public class ExternalDependenciesService implements DependenciesService {
         final Document document = Jsoup.parse(vah.html());
         final Element body = document.body();
         final Elements tbody = body.getElementsByTag("tbody");
-        final Optional<Element> firstTbody = Optional.ofNullable(tbody.first());
-        if (firstTbody.isEmpty()) return Collections.emptyList();
 
-        final Elements trs = firstTbody.get().getElementsByTag("tr");
-        return trs
+        return Optional.ofNullable(tbody.first())
+                .map(e -> e.getElementsByTag("tr"))
+                .orElseGet(Elements::new)
                 .stream()
                 .map(this::getVersionedDependency)
                 .collect(Collectors.toList());
