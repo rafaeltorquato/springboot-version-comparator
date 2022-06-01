@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class HtmlReportWriter implements ReportWriter {
 
+    //TODO make unit testable, remove static
     private static final AbstractConfigurableTemplateResolver templateResolver;
 
     static {

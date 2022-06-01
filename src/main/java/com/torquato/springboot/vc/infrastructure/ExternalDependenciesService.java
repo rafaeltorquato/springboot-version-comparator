@@ -36,6 +36,7 @@ public class ExternalDependenciesService implements DependenciesService {
                 .blockingFirst();
     }
 
+    //TODO make unit testable, remove static
     @SneakyThrows
     private String doRequest(final String version) {
         final Connection connect = Jsoup.connect(String.format(VERSION_TEMPLATE_URL, version));
