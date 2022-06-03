@@ -84,7 +84,7 @@ public class CompareCommand implements Callable<Integer> {
                 new DependenciesPairFactory(),
                 ReportWriter.create(this.format),
                 OutputWriter.create(this.output, this.format, this.outputDir),
-                Filters.comparedDependency(this.diffFilter, this.groupIdFilter, this.artifactIdFilter)
+                Filters.dependency(this.diffFilter, this.groupIdFilter, this.artifactIdFilter)
         );
         final Set<String> versionsSet = Stream.of(this.versions.split(","))
                 .map(String::trim)
