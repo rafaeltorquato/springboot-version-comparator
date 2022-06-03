@@ -11,14 +11,14 @@ public class TxtReportWriter implements ReportWriter {
     @Override
     public InMemoryReport write(final ComparedDependencies comparedDependencies) {
         final StringBuilder output = new StringBuilder();
-        final String template = "%1$-90s %2$-20s %3$-20s %4$-10s";
+        final String template = "%1$-90s %2$-20s %3$-20s %4$-10s\n";
         output.append(String.format("COMPARISON BETWEEN %s AND %s VERSIONS\n",
                 comparedDependencies.leftVersion(),
                 comparedDependencies.rightVersion()));
-        output.append(String.format(template + "\n", "DEPENDENCY", "LEFT", "RIGHT", "DIFF"));
+        output.append(String.format(template, "DEPENDENCY", "LEFT", "RIGHT", "DIFF"));
         for (final ComparedDependency cd : comparedDependencies.dependencies()) {
             final Dependency dependency = cd.dependency();
-            output.append(String.format(template + "\n",
+            output.append(String.format(template,
                     dependency.groupId() + ":" + dependency.artifactId(),
                     cd.leftVersion(),
                     cd.rightVersion(),
