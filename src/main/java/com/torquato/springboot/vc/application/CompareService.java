@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ComparatorService {
+public class CompareService {
 
     private final DependenciesService dependenciesService;
     private final ComparedDependenciesFactory comparedDependenciesFactory;
@@ -49,18 +49,6 @@ public class ComparatorService {
         log.info("Duration: {}ms", Duration.between(start, Instant.now()).toMillis());
     }
 
-    private ComparedDependencies applyFilters(final ComparedDependencies comparedDependencies) {
-        final List<ComparedDependency> filteredDependencies = comparedDependencies.dependencies()
-                .stream()
-                .filter(this.dependencyFilter)
-                .collect(Collectors.toList());
-        return new ComparedDependencies(
-                comparedDependencies.leftVersion(),
-                comparedDependencies.rightVersion(),
-                filteredDependencies
-        );
-    }
-
     private Observable<Dependencies> fetchVersion(final String version) {
         return Observable.just(version)
                 .subscribeOn(Schedulers.io())
@@ -75,6 +63,18 @@ public class ComparatorService {
         return Observable.just(pair)
                 .subscribeOn(Schedulers.computation())
                 .map(this.comparedDependenciesFactory::create);
+    }
+
+    private ComparedDependencies applyFilters(final ComparedDependencies comparedDependencies) {
+        final List<ComparedDependency> filteredDependencies = comparedDependencies.dependencies()
+                .stream()
+                .filter(this.dependencyFilter)
+                .collect(Collectors.toList());
+        return new ComparedDependencies(
+                comparedDependencies.leftVersion(),
+                comparedDependencies.rightVersion(),
+                filteredDependencies
+        );
     }
 
     private Observable<InMemoryReport> makeReport(final ComparedDependencies dependencies) {

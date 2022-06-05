@@ -1,6 +1,6 @@
 package com.torquato.springboot.vc.delivery.cli;
 
-import com.torquato.springboot.vc.application.ComparatorService;
+import com.torquato.springboot.vc.application.CompareService;
 import com.torquato.springboot.vc.application.filter.Filters;
 import com.torquato.springboot.vc.application.out.OutputWriter;
 import com.torquato.springboot.vc.application.report.ReportWriter;
@@ -78,7 +78,7 @@ public class CompareCommand implements Callable<Integer> {
     private void execute() {
         validateParameters();
 
-        final ComparatorService comparatorService = new ComparatorService(
+        final CompareService compareService = new CompareService(
                 new ExternalDependenciesService(),
                 new ComparedDependenciesFactory(),
                 new DependenciesPairFactory(),
@@ -89,7 +89,7 @@ public class CompareCommand implements Callable<Integer> {
         final Set<String> versionsSet = Stream.of(this.versions.split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
-        comparatorService.compare(versionsSet);
+        compareService.compare(versionsSet);
     }
 
     private void validateParameters() {
